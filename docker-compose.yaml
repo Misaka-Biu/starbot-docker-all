@@ -1,0 +1,51 @@
+services:
+  starbot:
+    image: heiyub/starbot:3.0-beta7
+    # 使用构建的StarBot 3.0镜像
+    container_name: Starbot3.0
+    # 容器名称，便于管理
+    restart: unless-stopped
+    # 重启策略：除非手动停止，否则总是重启
+    ports:
+      - "7827:7827"
+    # 应用服务端口映射 (宿主机:容器)
+    volumes:
+      - "/www/wwwroot/Starbot3.0:/app"
+    # 持久化数据目录挂载（宿主机路径:容器路径）请将宿主机目录更改为自己的路径目录
+    # .lock 文件存在下面参数修改将无效,删除文件锁后将覆盖配置文件 application.yml 和 datasource.json 文件 请注意备份
+    # 以下参数仅负责第一次创建 application.yml 如需变更请删除 /app/.lock 
+    environment:
+      SENDERS_ONE_BOT_ADDRESS: "10.10.10.99"
+      # OneBot服务地址 >>>必填注意修改<<<
+      SENDERS_ONE_BOT_HTTP_PORT: "3001"
+      # OneBot HTTP API端口 >>>必填注意修改<<<
+      SENDERS_ONE_BOT_WEBSOCKET_PORT: "3002"
+      # OneBot WebSocket端口 >>>必填注意修改<<<
+      SENDERS_ONE_BOT_HTTP_TOKEN: "misaka"
+      # OneBot HTTP认证令牌（严禁弱密码）>>>必填注意修改<<<
+      SENDERS_ONE_BOT_WEBSOCKET_TOKEN: "misaka"
+      # OneBot WebSocket认证令牌（严禁弱密码）>>>必填注意修改<<<
+      # 邮件告警配置（按需启用）
+      # MAIL_HOST: "smtp.qq.com"
+      # 邮件服务器地址
+      # MAIL_PORT: "587"
+      # 邮件服务器端口（TLS）
+      # MAIL_USERNAME: "10001@qq.com"
+      # 发信邮箱账号
+      # MAIL_PASSWORD: "xxxxxdaqrgjff"
+      # 邮箱授权码（非登录密码）
+      # MAIL_DEFAULT_TO: "10001@qq.com"
+      # 默认收件人邮箱
+      TZ: "Asia/Shanghai"
+      # 时区设置
+  starbot-webconfig:
+    image: heiyub/starbot:3.0-beta7web
+    container_name: starbot-webconfig-a
+    restart: unless-stopped
+    ports:
+      - "5001:5000" # http://localhost:5000/xxxxxx/ 开始配置主播
+    volumes:
+      - "/www/wwwroot/Starbot3.0:/starbot/"
+        # 持久化数据目录挂载（宿主机路径:容器路径）请务必和上面的路径一样
+    environment:
+      TZ: "Asia/Shanghai"
